@@ -1,5 +1,6 @@
 package View;
 
+import Driver.GUI;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -10,6 +11,8 @@ import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+
+import Driver.GUI;
 
 public class MarketScreen extends JPanel {
 	
