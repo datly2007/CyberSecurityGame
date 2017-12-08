@@ -1,12 +1,16 @@
 package View;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,27 +21,35 @@ import javax.swing.event.ChangeListener;
 import Driver.GUI;
 
 public class NetworkScreen extends JPanel implements ActionListener {
-
-/**Serial ID*/
-	private static final long serialVersionUID = -800376005947915793L;
 	
+	public static final String NETWORK_BACKGROUND = "support_files/wallpapers/NetworkScreen.png";
+
+	private GUI myGUI;
 	//	private PlayerInfo myPlayer;
 	private JTextField myPassField;
 	private JTextField myMacField;
 	
 	private String myPassString = "PasswordField";
 	private String myMacString = "MacField";
-	private GUI myGui;
+	
 	
 	public NetworkScreen(final GUI theGUI) {
-		super(new BorderLayout());
-		myGui = theGUI;
-		setPreferredSize(new Dimension(GUI.SCREEN_SIZE, GUI.SCREEN_SIZE));
+		
+		myGUI = theGUI;
 //		myPlayer = new PlayerInfo();
 		
-		JLabel screenTitle = new JLabel("NetworkScreen");
+		startNetworkScreen();
+	}
+	
+	private void startNetworkScreen() {
+		
+		setLayout(new BorderLayout());
+		
+		final JLabel screenTitle = new JLabel("NetworkScreen");
+		
 		//mainPanel contains all the components of network screen
-		JPanel mainPanel = new JPanel(new GridLayout(5,1));
+		final JPanel mainPanel = new JPanel(new GridLayout(5,1));
+		final JPanel bottom_panel = new JPanel();
 		
 		final JPanel passwordPanel = createPassField();
 		final JPanel passEncryptPanel = createPassEncrypt();
@@ -45,8 +57,12 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		final JPanel enableMacFilter = createMacFilterCheck();
 		final JPanel macField = createMacField();
 		
-		add(screenTitle, BorderLayout.NORTH);
+		final JButton back_button = new JButton("Back");
+		back_button.addMouseListener(new Network2MainListener());
 		
+		bottom_panel.add(back_button);
+		
+		add(screenTitle, BorderLayout.NORTH);
 		
 		mainPanel.add(passwordPanel);
 		mainPanel.add(passEncryptPanel);
@@ -54,7 +70,18 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		mainPanel.add(enableMacFilter);
 		mainPanel.add(macField);
 		
+		mainPanel.setOpaque(false);
+		
+		passwordPanel.setOpaque(false);
+		passEncryptPanel.setOpaque(false);
+		netEncryptPanel.setOpaque(false);
+		enableMacFilter.setOpaque(false);
+		macField.setOpaque(false);
+		
+		bottom_panel.setOpaque(false);
+		
 		add(mainPanel, BorderLayout.CENTER);
+		add(bottom_panel, BorderLayout.SOUTH);
 	}
 	
 	private void createPanelBorder(final String theString, final JPanel thePanel) {
@@ -144,9 +171,27 @@ public class NetworkScreen extends JPanel implements ActionListener {
 //			}
 			myMacField.selectAll();
 		}
+	}
+	
+	@Override 
+	public void paintComponent(final Graphics theGraphics) {
 		
-		
-
+		this.setOpaque(false);
+		super.paintComponent(theGraphics);
+		ImageIcon back_ground = new ImageIcon(NETWORK_BACKGROUND);
+		theGraphics.drawImage(back_ground.getImage(), EmailScreen.TOP_LEFT_X, EmailScreen.TOP_LEFT_Y, 
+										this.getWidth(), this.getHeight(), null);
+		this.setOpaque(true);
+	}
+	
+	class Network2MainListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			myGUI.remove(NetworkScreen.this);
+			myGUI.setContentPane( myGUI.getMainScreen() );
+			myGUI.invalidate();
+			myGUI.validate();
+		}
 	}
 	
 	class PassEncryptListener implements ChangeListener {

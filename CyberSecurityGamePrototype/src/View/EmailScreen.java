@@ -1,78 +1,89 @@
 package View;
 
+import Driver.GUI;
+
+import java.awt.BorderLayout;
 import java.awt.Graphics;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class EmailScreen extends JPanel implements ActionListener{
+public class EmailScreen extends JPanel {
 	
-	public static final String BACKGROUND_DIRECTORY = "support_files/wallpapers/EmailScreen.jpg";
+	public static final String EMAIL_BACKGROUND = "support_files/wallpapers/EmailScreen.jpg";
 	
 	public static final int TOP_LEFT_X = 0; 
 	
 	public static final int TOP_LEFT_Y = 0;
 	
-	private JButton myReportButton [];
+	private GUI myGUI;
 	
-	private JButton myEmailList[];
+	private List<JButton> myReportButton;
 	
-	private EmailDetailScreen []myEmail;
+	private List<JButton> myEmailList;
 	
-	private JFrame myFrame;
+	private List<EmailDetailScreen> myEmail;
 	
-	public EmailScreen() {
+	public EmailScreen(final GUI theGUI) {
 		
 		super();
-		myFrame = new JFrame();
-		myEmail = new EmailDetailScreen[4];
-		myEmail[0] = new EmailDetailScreen();
-		StartEmailScreen();
+		myGUI = theGUI;
+		myEmail = new ArrayList<>();
+		myReportButton = new ArrayList<>();
+		myEmailList = new ArrayList<>();
+		
+		startEmailScreen();
 	}
-	
+
+	private void startEmailScreen() {
+		
+		setLayout(new BorderLayout());
+		
+		final JPanel top_panel = new JPanel();
+		top_panel.setOpaque(false);
+		
+		final JPanel bottom_panel = new JPanel();
+		bottom_panel.setOpaque(false);
+		
+		final JButton back_button = new JButton("Back");
+		back_button.addMouseListener(new Email2MainListener());
+		
+		bottom_panel.add(back_button);
+		
+		myEmailList.add(new JButton("Email"));
+		myReportButton.add(new JButton("Report!"));
+		
+		top_panel.add(myEmailList.get(0));
+		top_panel.add(myReportButton.get(0));
+		
+		add(top_panel, BorderLayout.CENTER);
+		add(bottom_panel, BorderLayout.SOUTH);
+	}
+
 	@Override 
 	public void paintComponent(final Graphics theGraphics) {
+		
 		this.setOpaque(false);
 		super.paintComponent(theGraphics);
-		ImageIcon back_ground = new ImageIcon(BACKGROUND_DIRECTORY);
+		ImageIcon back_ground = new ImageIcon(EMAIL_BACKGROUND);
 		theGraphics.drawImage(back_ground.getImage(), TOP_LEFT_X, TOP_LEFT_Y, 
 										this.getWidth(), this.getHeight(), null);
 		this.setOpaque(true);
 	}
 	
-	
-	private void StartEmailScreen() {
-		JButton test = new JButton("Email");
-		JButton report_button = new JButton("Report!");
-		
-		this.add(test);
-		this.add(report_button);
-		
-		test.addActionListener(this);
-		
-		this.setVisible(true);
-		myFrame.add(this);
-		myFrame.setVisible(true);
-		myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		final Toolkit kit = Toolkit.getDefaultToolkit();
-        myFrame.setSize(
-                    (int) (kit.getScreenSize().getWidth()),
-                    (int) (kit.getScreenSize().getHeight()));
-        myFrame.setResizable(false);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		
-		myFrame.remove(this);
-		myFrame.setContentPane(myEmail[0]);
-		myFrame.invalidate();
-		myFrame.validate();
+	class Email2MainListener extends MouseAdapter {
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			myGUI.remove(EmailScreen.this);
+			myGUI.setContentPane( myGUI.getMainScreen() );
+			myGUI.invalidate();
+			myGUI.validate();
+			myGUI.setJMenuBar(null);
+		}
 	}
 }

@@ -2,67 +2,78 @@ package View;
 
 import Driver.GUI;
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.GridLayout;
+import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
-import Driver.GUI;
 
 public class MarketScreen extends JPanel {
 	
+	public static final String MARKET_BACKGROUND = "support_files/wallpapers/MarketPlace.jpg";
+	
 	private GUI myGUI;
-	private JPanel myMainScreen;
 	
 	//private PlayerInfo myPlayer;
 
-	public MarketScreen(final GUI theGUI, final JPanel theMain /*, thePlayer*/) {
-		super(new BorderLayout());
+	public MarketScreen(final GUI theGUI) {
+		
 		myGUI = theGUI;
-		myMainScreen = theMain;
-		setPreferredSize(new Dimension(GUI.SCREEN_SIZE, GUI.SCREEN_SIZE));
 		
-		final JPanel panel = new JPanel();
-		
-		
-		final JPanel panel1 = new JPanel(new GridLayout(3, 1));
-		final JButton button = new JButton("Back to main");
-		button.addMouseListener(new Back2MainListener());
-		
-		panel1.add(button);
-		panel.add(panel1, BorderLayout.CENTER);
-		add(panel, BorderLayout.CENTER);
-		
-		
-		GUI.createPanelBorder("Market Screen", this);
+		startMarketScreen();
 	}
 	
-	public void loadMenuBar(final boolean toLoad) {
+	private void startMarketScreen() {
+		
+		this.setLayout(new BorderLayout());
+		
+		final JPanel bottom_panel = new JPanel();
+		bottom_panel.setOpaque(false);
+		
+		final JButton back_button = new JButton("Back");
+		back_button.addMouseListener(new Market2MainListener());
+		
+		bottom_panel.add(back_button);
+		
+		add(bottom_panel, BorderLayout.SOUTH);
+	}
+	
+	public JMenuBar getMenuBar() {
 		
 		JMenuBar jmb = new JMenuBar();
 		
-		if(toLoad) {
-			final JMenu upgrades = new JMenu("Upgrades");
-			final JMenu newTools = new JMenu("New Tools");
-			jmb.add(upgrades);
-			jmb.add(newTools);
-			myGUI.setJMenuBar(jmb);
-			
-		} else {
-			myGUI.setMenuBar(null);
-		}
+		final JMenu upgrades = new JMenu("Upgrades");
+		final JMenu newTools = new JMenu("New Tools");
+		jmb.add(upgrades);
+		jmb.add(newTools);
+		
+		return jmb;
 	}
 	
-	class Back2MainListener extends MouseAdapter {
+	@Override 
+	public void paintComponent(final Graphics theGraphics) {
+		
+		this.setOpaque(false);
+		super.paintComponent(theGraphics);
+		ImageIcon back_ground = new ImageIcon(MARKET_BACKGROUND);
+		theGraphics.drawImage(back_ground.getImage(), EmailScreen.TOP_LEFT_X, EmailScreen.TOP_LEFT_Y, 
+										this.getWidth(), this.getHeight(), null);
+		this.setOpaque(true);
+	}
+	
+	class Market2MainListener extends MouseAdapter {
 		@Override
 		public void mouseClicked(MouseEvent e) {
-			myGUI.switchPanel(myMainScreen);
-			myGUI.setJMenuBar(null);
+			myGUI.remove(MarketScreen.this);
+			myGUI.setContentPane( myGUI.getMainScreen() );
+			myGUI.invalidate();
+			myGUI.validate();
+			MarketScreen.this.getMenuBar().setVisible(false);
 		}
 	}
 }

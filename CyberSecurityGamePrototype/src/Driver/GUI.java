@@ -2,6 +2,7 @@ package Driver;
 
 import View.MarketScreen;
 import View.NetworkScreen;
+import View.EmailScreen;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,125 +13,191 @@ import java.awt.event.MouseEvent;
  * Provide a frame in which to simulate a cyber-security videogame.
  *
  * @author Raymond Schooley
+ * @author Dat Ly 
  * @version 1.0
  */
-public class GUI extends JFrame
-{
-	/**Serial ID*/
-	private static final long serialVersionUID = -2095830580749127423L;
+public class GUI extends JFrame {
 	
-	public static final int SCREEN_SIZE = 800;
+	public static final String MAIN_BACKGROUND = "support_files/wallpapers/MainScreen.jpg";
 	
-	private JPanel myEmailScreen;
-
+	public static final int OFF_SET = 40;
+	
+	private JPanel myStartScreen;
+	
 	private JPanel myMainScreen;
 	
 	private MarketScreen myMarketScreen;
 	
 	private NetworkScreen myNetworkScreen;
 	
-	private JPanel myCurrentPanel;
+	private EmailScreen myEmailScreen;
 
     /**
      * Create a JFrame that will be able to load different panels representing the 
      * different screens of the game.
      */
-    public GUI(String theName)
-    {
+    public GUI(final String theName) {
+    	
         super(theName);
-        setVisible(true);
-        
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        myMainScreen = createMainScreen();
-        myEmailScreen = new JPanel();
+       
+        myStartScreen = new JPanel();
+        myMainScreen = new MainScreen();
+        myEmailScreen = new EmailScreen(this);
         myNetworkScreen = new NetworkScreen(this);
-        myMarketScreen = new MarketScreen(this, myMainScreen);
-        myCurrentPanel = myMainScreen;
-        add(myMainScreen,BorderLayout.CENTER);
-        pack();
-         
+        myMarketScreen = new MarketScreen(this);
+        
+        startGame();
     }
-	
-	private JPanel createMainScreen() {
-		JPanel panel = new JPanel(new BorderLayout());
-		panel.setPreferredSize(new Dimension(SCREEN_SIZE, SCREEN_SIZE));
-		
-		JPanel panel1 = new JPanel(new GridLayout(3, 1));
-		
-		JButton marketButton = new JButton();
-		marketButton.addMouseListener(new Main2MarketAdapter());
-		panel1.add(marketButton);
-		
-		panel.add(new JLabel("MainScreen"), BorderLayout.NORTH);
-		
-		JButton netButton = new JButton();
-		netButton.addMouseListener(new Main2NetworkAdapter());
-		panel1.add(netButton);
-		
-		panel.add(panel1, BorderLayout.CENTER);
-		
-		return panel;
-		
-	}
-	
-//	private JPanel createMarketScreen() {
-//		JPanel panel = new JPanel(new BorderLayout());
-//		panel.setPreferredSize(new Dimension(SCREEN_SIZE, SCREEN_SIZE));
-//		JButton button = new JButton();
-//		button.addMouseListener(new Market2MainAdapter());
-//		panel.add(button, BorderLayout.CENTER);
-//		panel.add(new JLabel("MarketScreen"), BorderLayout.NORTH);
-//		
-//		return panel;
-//	}
-	
-	public static void createPanelBorder(final String theString, final JPanel thePanel) {
-		thePanel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createTitledBorder(theString),
-                BorderFactory.createEmptyBorder(5,5,5,5)));
-	}
-	
-	public void switchPanel(JPanel thePanel) {
-		remove(myCurrentPanel);
-		add(thePanel);
-		myCurrentPanel = thePanel;
-		pack();
-	}
     
+    private void startGame() {
+    		
+    		myStartScreen.setLayout(new BorderLayout());
+    		
+    		final JPanel top_panel = new JPanel();
+    		final JPanel bottom_panel = new JPanel();
+    		
+    		final JButton start_button = new JButton("Start Game");
+    		start_button.addMouseListener(new StartGameAdapter());
+    		
+    		final JButton exit_button = new JButton("Exit Game");
+    		exit_button.addMouseListener(new ExitGameAdapter());
+    		
+    		ImageIcon im = new ImageIcon("support_files/wallpapers/gameLabel.jpg");
+    		final JLabel label = new JLabel();
+    		label.setIcon(im);
+    		
+    		top_panel.add(start_button);
+    		top_panel.add(exit_button);
+    		top_panel.setOpaque(false);
+    		
+    		bottom_panel.add(label);
+    		bottom_panel.setOpaque(false);
+    		
+    		// Add all necessary components into main screen
+    		myStartScreen.add(top_panel, BorderLayout.NORTH);
+    		myStartScreen.add(bottom_panel, BorderLayout.SOUTH);
+    		
+    		myStartScreen.setBackground(Color.CYAN);
+    		
+    		add(myStartScreen);
+    		setSize(610, 655);
+    		final Toolkit kit = Toolkit.getDefaultToolkit();
+        setLocation(
+                (int) ((kit.getScreenSize().getWidth() - this.getWidth()) / 2),
+                (int) ((kit.getScreenSize().getHeight() - this.getHeight()) / 2));
+        
+        setResizable(false);
+        setVisible(true);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+	public JPanel getMainScreen() {
+		
+		return myMainScreen;
+	}
 
-    public static void main(String[] theArgs) {
-    	javax.swing.SwingUtilities.invokeLater(new Runnable() {
+    public static void main(final String[] theArgs) {
+    	
+    		javax.swing.SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new GUI("CyberSecurity");
+                new GUI("Cyber Security Game");
             }
         });
     }
     
-    
-    class Main2MarketAdapter extends MouseAdapter {
+    class MainScreen extends JPanel {
     	
-    	@Override
-    	public void mouseClicked(MouseEvent e) {
-    		switchPanel(myMarketScreen);
-    		myMarketScreen.loadMenuBar(true);
-    	}
+    		MainScreen() {
+    			
+    			startMainScreen();
+    		}
+    		
+    		private void startMainScreen() {
+    			
+    			JButton market_button = new JButton("Market Place");
+    			market_button.addMouseListener(new GotoMarketAdapter());
+    			
+    			JButton network_button = new JButton("Network Configuration");
+    			network_button.addMouseListener(new GotoNetworkAdapter());
+    			
+    			JButton email_button = new JButton("Email");
+    			email_button.addMouseListener(new GotoEmailAdapter());
+    			
+    			add(market_button);
+    			add(network_button);
+    			add(email_button);
+    		}
+    		
+    		@Override 
+    		public void paintComponent(final Graphics theGraphics) {
+    			
+    			setOpaque(false);
+    			super.paintComponent(theGraphics);
+    			ImageIcon back_ground = new ImageIcon(MAIN_BACKGROUND);
+    			theGraphics.drawImage(back_ground.getImage(), EmailScreen.TOP_LEFT_X, EmailScreen.TOP_LEFT_Y, 
+										this.getWidth(), this.getHeight(), null);
+    			setOpaque(true);
+		}
     }
     
-    class Market2MainAdapter extends MouseAdapter {
+    class GotoMarketAdapter extends MouseAdapter {
     	
-    	@Override
-    	public void mouseClicked(MouseEvent e) {
-    		switchPanel(myMainScreen);
-    	}
+    		@Override
+    		public void mouseClicked(final MouseEvent e) {
+    			
+    			GUI.this.remove(myMainScreen);
+    			GUI.this.setContentPane(myMarketScreen);
+    			GUI.this.invalidate();
+    			GUI.this.validate();
+    			GUI.this.setJMenuBar(myMarketScreen.getMenuBar());
+    		}
     }
     
-
-    class Main2NetworkAdapter extends MouseAdapter {
+    class GotoNetworkAdapter extends MouseAdapter {
     	
-    	@Override
-    	public void mouseClicked(MouseEvent e) {
-    		switchPanel(myNetworkScreen);
-    	}
+    		@Override
+    		public void mouseClicked(final MouseEvent e) {
+    			GUI.this.remove(myMainScreen);
+    			GUI.this.setContentPane(myNetworkScreen);
+    			GUI.this.invalidate();
+    			GUI.this.validate();
+    		}
+    }
+    
+    class GotoEmailAdapter extends MouseAdapter {
+    		
+    		@Override
+    		public void mouseClicked(final MouseEvent e) {
+    			GUI.this.remove(myMainScreen);
+    			GUI.this.setContentPane(myEmailScreen);
+    			GUI.this.invalidate();
+    			GUI.this.validate();
+    		}
+    }
+    
+    class StartGameAdapter extends MouseAdapter {
+    		
+    		@Override
+    		public void mouseClicked(final MouseEvent e) {
+    			GUI.this.remove(myStartScreen);
+    			GUI.this.setContentPane(myMainScreen);
+    			GUI.this.invalidate();
+    			GUI.this.validate();
+    			
+    			final Toolkit kit = Toolkit.getDefaultToolkit();
+    			GUI.this.setSize(
+    	                (int) (kit.getScreenSize().getWidth()),
+    	                (int) (kit.getScreenSize().getHeight() - OFF_SET));
+    			GUI.this.setLocation(EmailScreen.TOP_LEFT_X, EmailScreen.TOP_LEFT_Y);
+    		}
+    }
+    
+    class ExitGameAdapter extends MouseAdapter {
+    		
+    		@Override
+    		public void mouseClicked(final MouseEvent e) {
+    			System.exit(0);
+    		}
     }
 }
    
