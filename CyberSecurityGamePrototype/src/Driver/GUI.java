@@ -5,15 +5,21 @@ import View.NetworkScreen;
 import View.EmailScreen;
 
 import javax.swing.*;
+
+import Audio.Sound;
+
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 
 /**
  * Provide a frame in which to simulate a cyber-security videogame.
  *
  * @author Raymond Schooley
  * @author Dat Ly 
+ * @author Trung Thai 
+ * @author Wes Stahl
  * @version 1.0
  */
 public class GUI extends JFrame {
@@ -21,6 +27,10 @@ public class GUI extends JFrame {
 	public static final String MAIN_BACKGROUND = "support_files/wallpapers/MainScreen.jpg";
 	
 	public static final int OFF_SET = 40;
+	
+	private static final int DEFAULT_MUSIC_WIDTH = 300; 
+	
+	private static final int DEFAULT_MUSIC_HEIGHT = 100; 
 	
 	private JPanel myStartScreen;
 	
@@ -46,6 +56,12 @@ public class GUI extends JFrame {
         myNetworkScreen = new NetworkScreen(this);
         myMarketScreen = new MarketScreen(this);
         
+        try {
+        		setupMusic();
+        } catch (final IOException e) {
+        		JOptionPane.showMessageDialog(null, "Could not find file" 
+        							+ e.getMessage(), "I/O Error", JOptionPane.ERROR_MESSAGE);
+        }
         startGame();
     }
     
@@ -89,6 +105,20 @@ public class GUI extends JFrame {
         setResizable(false);
         setVisible(true);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+    
+    /** 
+     * Add a separate JFrame for background music.
+     * 
+     * @throws IOException Will look for sound file, throw exception if not there.
+     */
+    public final void setupMusic() throws IOException {
+        
+        final JFrame frame = new Sound();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLocationByPlatform(true);
+        frame.setSize(DEFAULT_MUSIC_WIDTH, DEFAULT_MUSIC_HEIGHT);
+        frame.setVisible(true);
     }
     
 	public JPanel getMainScreen() {
