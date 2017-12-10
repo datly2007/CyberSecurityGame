@@ -183,7 +183,7 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		final JPanel panel1 = new JPanel();
 		final JPanel panel2 = new JPanel();
 		
-		createPanelBorder("Reenter New Password", panel1);
+		createPanelBorder("Re-enter New Password", panel1);
 		createPanelBorder("Verify Old Password", panel2);
 		
 		panel1.add(myPassField1);
