@@ -37,6 +37,7 @@ public class MarketScreen extends JPanel {
 		
 		final JButton back_button = new JButton("Back");
 		back_button.addMouseListener(new Market2MainListener());
+		back_button.setIcon(GUI.BACK_ICON);
 		
 		bottom_panel.add(back_button);
 		

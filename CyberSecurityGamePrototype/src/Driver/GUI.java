@@ -4,6 +4,8 @@ import View.MarketScreen;
 import View.NetworkScreen;
 import View.EmailScreen;
 
+import Model.PlayerInfo;
+
 import javax.swing.*;
 
 import Audio.Sound;
@@ -15,17 +17,32 @@ import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 /**
- * Provide a frame in which to simulate a cyber-security videogame.
+ * Provide a frame in which to simulate a Cyber-security videogame.
  *
+ * @author Dat Ly
  * @author Raymond Schooley
- * @author Dat Ly 
  * @author Trung Thai 
  * @author Wes Stahl
  * @version 1.0
  */
+
 public class GUI extends JFrame {
 	
 	public static final String MAIN_BACKGROUND = "support_files/wallpapers/MainScreen.jpg";
+	
+	public static final ImageIcon EMAIL_ICON = new ImageIcon("support_files/icons/Email-icon.png");
+	
+	public static final ImageIcon EXIT_ICON = new ImageIcon("support_files/icons/Close-icon.png");
+	
+	public static final ImageIcon MARKET_ICON = new ImageIcon("support_files/icons/Market-icon.png");
+	
+	public static final ImageIcon BACK_ICON = new ImageIcon("support_files/icons/Back-icon.png");
+	
+	public static final ImageIcon START_ICON = new ImageIcon("support_files/icons/Start-icon.png");
+	
+	public static final ImageIcon NETWORK_ICON = new ImageIcon("support_files/icons/Network-icon.png");
+	
+	public static final ImageIcon SUBMIT_ICON = new ImageIcon("support_files/icons/Lock-icon.png");
 	
 	public static final int OFF_SET = 40;
 	
@@ -42,6 +59,8 @@ public class GUI extends JFrame {
 	private NetworkScreen myNetworkScreen;
 	
 	private EmailScreen myEmailScreen;
+	
+	private PlayerInfo myPlayer;
 
     /**
      * Create a JFrame that will be able to load different panels representing the 
@@ -51,11 +70,13 @@ public class GUI extends JFrame {
     	
         super(theName);
        
+        myPlayer = new PlayerInfo();
         myStartScreen = new JPanel();
         myMainScreen = new MainScreen();
-        myEmailScreen = new EmailScreen(this);
-        myNetworkScreen = new NetworkScreen(this);
+        myEmailScreen = new EmailScreen(this, myPlayer);
+        myNetworkScreen = new NetworkScreen(this, myPlayer);
         myMarketScreen = new MarketScreen(this);
+       
         
         try {
         		setupMusic();
@@ -63,6 +84,7 @@ public class GUI extends JFrame {
         		JOptionPane.showMessageDialog(null, "Could not find file" 
         							+ e.getMessage(), "I/O Error", JOptionPane.ERROR_MESSAGE);
         }
+        
         startGame();
     }
     
@@ -75,9 +97,11 @@ public class GUI extends JFrame {
     		
     		final JButton start_button = new JButton("Start Game");
     		start_button.addMouseListener(new StartGameAdapter());
+    		start_button.setIcon(START_ICON);
     		
     		final JButton exit_button = new JButton("Exit Game");
     		exit_button.addMouseListener(new ExitGameAdapter());
+    		exit_button.setIcon(EXIT_ICON);
     		
     		ImageIcon im = new ImageIcon("support_files/wallpapers/gameLabel.jpg");
     		final JLabel label = new JLabel();
@@ -156,18 +180,23 @@ public class GUI extends JFrame {
     			
     			final JButton market_button = new JButton("Market Place");
     			market_button.addMouseListener(new GotoMarketAdapter());
+    			market_button.setIcon(MARKET_ICON);
     			
     			final JButton network_button = new JButton("Network Configuration");
     			network_button.addMouseListener(new GotoNetworkAdapter());
+    			network_button.setIcon(NETWORK_ICON);
     			
     			final JButton email_button = new JButton("Email");
     			email_button.addMouseListener(new GotoEmailAdapter());
+    			email_button.setIcon(EMAIL_ICON);
     			
     			final JButton submit_button = new JButton("Submit");
-    			// This will fire property change to call the requirement class to do the work 
+    			submit_button.addMouseListener(new SubmitActionAdapter()); 
+    			submit_button.setIcon(SUBMIT_ICON);
     			
     			final JButton exit_button = new JButton("Exit");
     			exit_button.addMouseListener(new ExitGameAdapter());
+    			exit_button.setIcon(EXIT_ICON);
     			
     			north_panel.add(market_button);
     			north_panel.add(network_button);
@@ -257,6 +286,14 @@ public class GUI extends JFrame {
     		public void mouseClicked(final MouseEvent e) {
     			GUI.this.dispatchEvent(new WindowEvent(GUI.this, 
                         WindowEvent.WINDOW_CLOSING));
+    		}
+    }
+    // Needed to signal the requirement class to do the checking for requirement 
+    class SubmitActionAdapter extends MouseAdapter {
+    	
+    		@Override 
+    		public void mouseClicked(final MouseEvent e) {
+    			
     		}
     }
 }

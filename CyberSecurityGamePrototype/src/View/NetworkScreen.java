@@ -45,10 +45,10 @@ public class NetworkScreen extends JPanel implements ActionListener {
 	private String myNewPassB;
 	private String myOldPass;
 	
-	public NetworkScreen(final GUI theGUI) {
+	public NetworkScreen(final GUI theGUI, final PlayerInfo thePlayer) {
 		
 		myGUI = theGUI;
-		myPlayer = new PlayerInfo();
+		myPlayer = thePlayer;
 		myPassField1 = new JPasswordField(FIELD_LENGTH);
 		myPassField2 = new JPasswordField(FIELD_LENGTH);
 		myNewPassA = "";
@@ -76,6 +76,7 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		
 		final JButton back_button = new JButton("Back");
 		back_button.addMouseListener(new Network2MainListener());
+		back_button.setIcon(GUI.BACK_ICON);
 		
 		bottom_panel.add(back_button);
 		
@@ -238,6 +239,7 @@ public class NetworkScreen extends JPanel implements ActionListener {
 	}
 	
 	class Network2MainListener extends MouseAdapter {
+		
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			myGUI.remove(NetworkScreen.this);
@@ -271,13 +273,13 @@ public class NetworkScreen extends JPanel implements ActionListener {
 
 	class MacFilterListener implements ChangeListener {
 	
-	@Override
-	public void stateChanged(ChangeEvent e) {
-		final JCheckBox cb = (JCheckBox) e.getSource();
-		//myPlayer.enableAdressFiltering(cb.isSelected());
-//		System.out.println(cb.isSelected());
-	}
-	
+		@Override
+		public void stateChanged(ChangeEvent e) {
+			final JCheckBox cb = (JCheckBox) e.getSource();
+			//myPlayer.enableAdressFiltering(cb.isSelected());
+//			System.out.println(cb.isSelected());
+		}
+		
 	}
 	
 }

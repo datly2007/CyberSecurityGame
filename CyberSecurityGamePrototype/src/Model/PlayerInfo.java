@@ -5,10 +5,16 @@ package Model;
 
 import java.util.*;
 /**
- * @author wesst
  *
+ * @author Dat Ly
+ * @author Raymond Schooley
+ * @author Trung Thai 
+ * @author Wes Stahl
+ * @version 1.0
  */
+
 public class PlayerInfo {
+	
 	private String myPass;
 	private String myEncryptPass;
 	private boolean myNetEncryptFlag;
@@ -22,6 +28,7 @@ public class PlayerInfo {
 	 * Constructor for class PlayerInfo. Sets default constraints.
 	 */
 	public PlayerInfo() {
+		
 		myPass = defaultPass();	
 		myNetEncryptFlag = false;
 		myPassEncryptFlag = false;
@@ -38,23 +45,21 @@ public class PlayerInfo {
 	 * @return returns a randomly generated password
 	 */
 	private String defaultPass() {
-		int aVal = 1, temp;
-		Random rand = new Random();
-		String aString = "";
-		temp = rand.nextInt(122);
-		while (temp < 97) {
-			temp = rand.nextInt(122);
+		
+		int password_length = 10;
+		StringBuilder aString = new StringBuilder();
+		
+		int min = 97; 
+		int max = 127; 
+		Random r = new Random();
+		
+		while (password_length > 0) {
+			int result = r.nextInt(max - min) + min;
+			aString.append((char) result);
+			password_length--;
 		}
-		aString += (char)temp;
-		while (aVal < 15) {
-			temp = rand.nextInt(122);
-			while (temp < 48 || (temp > 57 && temp < 65) || (temp > 90 && temp < 97)) {
-				temp = rand.nextInt();
-			}
-			aString += (char)temp;
-			aVal++;
-		}
-		return aString;
+		
+		return aString.toString();
 	}
 	
 	/**
