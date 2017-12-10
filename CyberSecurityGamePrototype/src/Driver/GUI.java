@@ -11,6 +11,7 @@ import Audio.Sound;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 
 /**
@@ -93,7 +94,7 @@ public class GUI extends JFrame {
     		myStartScreen.add(top_panel, BorderLayout.NORTH);
     		myStartScreen.add(bottom_panel, BorderLayout.SOUTH);
     		
-    		myStartScreen.setBackground(Color.CYAN);
+    		myStartScreen.setBackground(Color.DARK_GRAY);
     		
     		add(myStartScreen);
     		setSize(610, 655);
@@ -144,18 +145,45 @@ public class GUI extends JFrame {
     		
     		private void startMainScreen() {
     			
-    			JButton market_button = new JButton("Market Place");
+    			setLayout(new BorderLayout());
+    			
+    			final JPanel north_panel = new JPanel();
+    			final JPanel south_panel = new JPanel();
+    			
+    			final JPanel inner_south_panel = new JPanel();
+    			
+    			south_panel.setLayout(new BorderLayout());
+    			
+    			final JButton market_button = new JButton("Market Place");
     			market_button.addMouseListener(new GotoMarketAdapter());
     			
-    			JButton network_button = new JButton("Network Configuration");
+    			final JButton network_button = new JButton("Network Configuration");
     			network_button.addMouseListener(new GotoNetworkAdapter());
     			
-    			JButton email_button = new JButton("Email");
+    			final JButton email_button = new JButton("Email");
     			email_button.addMouseListener(new GotoEmailAdapter());
     			
-    			add(market_button);
-    			add(network_button);
-    			add(email_button);
+    			final JButton submit_button = new JButton("Submit");
+    			// This will fire property change to call the requirement class to do the work 
+    			
+    			final JButton exit_button = new JButton("Exit");
+    			exit_button.addMouseListener(new ExitGameAdapter());
+    			
+    			north_panel.add(market_button);
+    			north_panel.add(network_button);
+    			north_panel.add(email_button);
+    			
+    			inner_south_panel.add(submit_button);
+    			
+    			south_panel.add(inner_south_panel, BorderLayout.NORTH);
+    			south_panel.add(exit_button, BorderLayout.WEST);
+    			
+    			north_panel.setOpaque(false);
+    			south_panel.setOpaque(false);
+    			inner_south_panel.setOpaque(false);
+    			
+    			add(north_panel, BorderLayout.NORTH);
+    			add(south_panel, BorderLayout.SOUTH);
     		}
     		
     		@Override 
@@ -177,9 +205,10 @@ public class GUI extends JFrame {
     			
     			GUI.this.remove(myMainScreen);
     			GUI.this.setContentPane(myMarketScreen);
+    			GUI.this.setJMenuBar(myMarketScreen.getMenuBar());
     			GUI.this.invalidate();
     			GUI.this.validate();
-    			GUI.this.setJMenuBar(myMarketScreen.getMenuBar());
+    			
     		}
     }
     
@@ -226,7 +255,8 @@ public class GUI extends JFrame {
     		
     		@Override
     		public void mouseClicked(final MouseEvent e) {
-    			System.exit(0);
+    			GUI.this.dispatchEvent(new WindowEvent(GUI.this, 
+                        WindowEvent.WINDOW_CLOSING));
     		}
     }
 }

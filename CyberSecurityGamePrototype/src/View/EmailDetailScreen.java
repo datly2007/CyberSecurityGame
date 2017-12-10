@@ -1,16 +1,23 @@
 package View;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
 public class EmailDetailScreen extends JPanel {
 
+	private JPanel myEmailScreen;
 	
-	public EmailDetailScreen() {
+	public EmailDetailScreen(final JPanel thePanel) {
 		
 		super();
+		
+		myEmailScreen = thePanel;
+		
 		openEmail();
 	}
 	
@@ -26,11 +33,25 @@ public class EmailDetailScreen extends JPanel {
 	
 	private void openEmail() {
 		
-		JButton back_button = new JButton("Back");
+		setLayout(new BorderLayout());
 		
-		this.add(back_button);
+		final JPanel north_panel = new JPanel();
+		final JPanel south_panel = new JPanel();
 		
-		this.setBackground(Color.BLUE);
-		this.setVisible(true);
+		final JButton back_button = new JButton("Back");
+		// This will fire some event so that the main email know and go back to main screen 
+		
+		south_panel.add(back_button);
+		
+		add(south_panel, BorderLayout.SOUTH);
+		
+		south_panel.setOpaque(false);
+		
+		setBackground(Color.CYAN);
+		setVisible(true);
 	}
 }
+
+
+
+

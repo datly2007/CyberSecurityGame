@@ -70,10 +70,11 @@ public class MarketScreen extends JPanel {
 		@Override
 		public void mouseClicked(MouseEvent e) {
 			myGUI.remove(MarketScreen.this);
+			myGUI.setJMenuBar(null);
 			myGUI.setContentPane( myGUI.getMainScreen() );
 			myGUI.invalidate();
 			myGUI.validate();
-			MarketScreen.this.getMenuBar().setVisible(false);
+			
 		}
 	}
 }

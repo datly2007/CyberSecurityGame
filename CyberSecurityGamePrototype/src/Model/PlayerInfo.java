@@ -11,8 +11,8 @@ import java.util.*;
 public class PlayerInfo {
 	private String myPass;
 	private String myEncryptPass;
-	private boolean myNetEncrypt;
-	private boolean myPassEncrypt;
+	private boolean myNetEncryptFlag;
+	private boolean myPassEncryptFlag;
 	private int myLevel;
 	private double myWallet;
 	private String myPassEncyptionKey;
@@ -22,9 +22,9 @@ public class PlayerInfo {
 	 * Constructor for class PlayerInfo. Sets default constraints.
 	 */
 	public PlayerInfo() {
-		myPass = defualtPass();
-		myNetEncrypt = false;
-		myPassEncrypt = false;
+		myPass = defaultPass();	
+		myNetEncryptFlag = false;
+		myPassEncryptFlag = false;
 		myLevel = 1;
 		myWallet = 100.00;
 		myPassEncyptionKey = "";
@@ -37,7 +37,7 @@ public class PlayerInfo {
 	 * 
 	 * @return returns a randomly generated password
 	 */
-	private String defualtPass() {
+	private String defaultPass() {
 		int aVal = 1, temp;
 		Random rand = new Random();
 		String aString = "";
@@ -63,7 +63,7 @@ public class PlayerInfo {
 	 * @return returns their password to JPanel class for player details.
 	 */
 	public String getPass() {
-		if (myPassEncrypt) {
+		if (myPassEncryptFlag) {
 			return myEncryptPass;
 		}
 		return myPass;
@@ -72,24 +72,18 @@ public class PlayerInfo {
 	/**
 	 * Changes network encryption scheme if the player decides to encrypt their network
 	 */
-	public void changeNetEncryption() {
-		if (myNetEncrypt) {
-			myNetEncrypt = false;
-		} else {
-			myNetEncrypt = true;
-			//netEncrypt();
-		}
+	public void changeNetEncryption(final boolean theEncrypt) {
+		myNetEncryptFlag = theEncrypt;
 	}
 	
 	/**
 	 * Determines if the user would like to encrypt their password. Encrypts password if yes.
 	 */
-	public void changePassEncryption() {
-		if (myPassEncrypt) {
-			myPassEncrypt = false;
+	public void changePassEncryption(final boolean theEncrypt) {
+		myPassEncryptFlag = theEncrypt;
+		if (!myPassEncryptFlag) {
 			myEncryptPass = "";
 		} else {
-			myPassEncrypt = true;
 			createEncryptionKey();
 			encryptPassword();
 		}
@@ -160,7 +154,7 @@ public class PlayerInfo {
 	 * 
 	 * @param theDouble double value that can be either negative or positive.
 	 */
-	public void incrementWallet(double theDouble) {
+	public void incrementWallet(final double theDouble) {
 		myWallet += theDouble;
 	}
 	

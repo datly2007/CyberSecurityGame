@@ -29,6 +29,8 @@ public class EmailScreen extends JPanel {
 	
 	private List<EmailDetailScreen> myEmail;
 	
+	private int myEmailIndex; 
+	
 	public EmailScreen(final GUI theGUI) {
 		
 		super();
@@ -36,6 +38,7 @@ public class EmailScreen extends JPanel {
 		myEmail = new ArrayList<>();
 		myReportButton = new ArrayList<>();
 		myEmailList = new ArrayList<>();
+		myEmailIndex = 0; 
 		
 		startEmailScreen();
 	}
@@ -43,6 +46,8 @@ public class EmailScreen extends JPanel {
 	private void startEmailScreen() {
 		
 		setLayout(new BorderLayout());
+		final EmailDetailScreen test = new EmailDetailScreen(this);
+		myEmail.add(test);
 		
 		final JPanel top_panel = new JPanel();
 		top_panel.setOpaque(false);
@@ -56,6 +61,8 @@ public class EmailScreen extends JPanel {
 		bottom_panel.add(back_button);
 		
 		myEmailList.add(new JButton("Email"));
+		myEmailList.get(0).addMouseListener(new Email2DetailListener());
+		// Need to update the myEmailIndex accordingly 
 		myReportButton.add(new JButton("Report!"));
 		
 		top_panel.add(myEmailList.get(0));
@@ -83,7 +90,16 @@ public class EmailScreen extends JPanel {
 			myGUI.setContentPane( myGUI.getMainScreen() );
 			myGUI.invalidate();
 			myGUI.validate();
-			myGUI.setJMenuBar(null);
+		}
+	}
+	
+	class Email2DetailListener extends MouseAdapter {
+		@Override 
+		public void mouseClicked(final MouseEvent e) {
+			myGUI.remove(EmailScreen.this);
+			myGUI.setContentPane( myEmail.get(0) );
+			myGUI.invalidate();
+			myGUI.validate();
 		}
 	}
 }

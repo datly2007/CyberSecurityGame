@@ -1,5 +1,6 @@
 package View;
 
+import Model.PlayerInfo;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
@@ -12,8 +13,10 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -23,20 +26,34 @@ import Driver.GUI;
 public class NetworkScreen extends JPanel implements ActionListener {
 	
 	public static final String NETWORK_BACKGROUND = "support_files/wallpapers/NetworkScreen.png";
+	
+	private static final int FIELD_LENGTH = 20; 
 
 	private GUI myGUI;
-	//	private PlayerInfo myPlayer;
+	private PlayerInfo myPlayer;
 	private JTextField myPassField;
 	private JTextField myMacField;
-	
+	private JPasswordField myPassField1; 
+	private JPasswordField myPassField2;
+
 	private String myPassString = "PasswordField";
 	private String myMacString = "MacField";
 	
+	private String myVerifyPassword = "VerifyPassword";
+	
+	private String myNewPassA;
+	private String myNewPassB;
+	private String myOldPass;
 	
 	public NetworkScreen(final GUI theGUI) {
 		
 		myGUI = theGUI;
-//		myPlayer = new PlayerInfo();
+		myPlayer = new PlayerInfo();
+		myPassField1 = new JPasswordField(FIELD_LENGTH);
+		myPassField2 = new JPasswordField(FIELD_LENGTH);
+		myNewPassA = "";
+		myNewPassB = "";
+		myOldPass = "";
 		
 		startNetworkScreen();
 	}
@@ -93,7 +110,7 @@ public class NetworkScreen extends JPanel implements ActionListener {
 	private JPanel createPassField() {
 		final JPanel panel = new JPanel();
         //Create password field
-		myPassField = new JTextField(10);
+		myPassField = new JTextField(FIELD_LENGTH);
 		myPassField.setActionCommand(myPassString);
 		//label for field
 //		JLabel label = new JLabel(myPassString + ": ");
@@ -139,7 +156,7 @@ public class NetworkScreen extends JPanel implements ActionListener {
 	private JPanel createMacField() {
 		final JPanel panel = new JPanel();
         //Create password field
-		myMacField = new JTextField(20);
+		myMacField = new JTextField(FIELD_LENGTH);
 		myMacField.setActionCommand(myMacString);
 		//label for field
 //		JLabel label = new JLabel(myPassString + ": ");
@@ -151,8 +168,35 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		
 		return panel;
 	}
-	
-	
+
+	private void verifyPassword(final String theString) {
+		final JFrame frame = new JFrame();
+		frame.setSize(400, 400);
+		
+		myPassField1.setActionCommand(myVerifyPassword);
+		myPassField1.addActionListener(this);
+		
+		myPassField2.setActionCommand(myVerifyPassword + "1");
+		myPassField2.addActionListener(this);
+		
+		final JPanel panel = new JPanel(new GridLayout(2,1));
+		final JPanel panel1 = new JPanel();
+		final JPanel panel2 = new JPanel();
+		
+		createPanelBorder("Reenter New Password", panel1);
+		createPanelBorder("Verify Old Password", panel2);
+		
+		panel1.add(myPassField1);
+		panel2.add(myPassField2);
+		
+		panel.add(panel1);
+		panel.add(panel2);
+		
+		frame.add(panel);
+		
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -160,8 +204,8 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		String text = "";
 		if(cmd.equals(myPassString)) {
 		    text = myPassField.getText();
-		    System.out.println(text);
-		  //myPlayer.setPassword(text);			
+		    verifyPassword(text);
+		    myNewPassA = text;
 			myPassField.selectAll();
 		} else if(cmd.equals(myMacString)) {
 			text = myMacField.getText();
@@ -170,6 +214,15 @@ public class NetworkScreen extends JPanel implements ActionListener {
 //				myPlayer.addMacAdress(text):
 //			}
 			myMacField.selectAll();
+		} else if(cmd.equals(myVerifyPassword)) {
+			  myNewPassB = myPassField1.getPassword().toString();
+		} else if(cmd.equals(myVerifyPassword + "1")) {
+			myOldPass = myPassField2.getPassword().toString();
+			System.out.println(myPlayer.changePassword(myOldPass, myNewPassA
+					, myNewPassB));
+			final JPasswordField pwf = (JPasswordField) e.getSource();
+			final JFrame frame = (JFrame) pwf.getTopLevelAncestor();
+			frame.dispose();
 		}
 	}
 	
@@ -199,24 +252,24 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			final JCheckBox cb = (JCheckBox) e.getSource();
-			//myPlayer.passEncrypt(cb.isSelected());
+			myPlayer.changePassEncryption(cb.isSelected());
 //			System.out.println(cb.isSelected());
 		}
 		
 	}
 	
-class NetEncryptListener implements ChangeListener {
+	class NetEncryptListener implements ChangeListener {
 		
 		@Override
 		public void stateChanged(ChangeEvent e) {
 			final JCheckBox cb = (JCheckBox) e.getSource();
-			//myPlayer.netEncrypt(cb.isSelected());
+			myPlayer.changePassEncryption(cb.isSelected());
 //			System.out.println(cb.isSelected());
 		}
 		
 	}
 
-class MacFilterListener implements ChangeListener {
+	class MacFilterListener implements ChangeListener {
 	
 	@Override
 	public void stateChanged(ChangeEvent e) {
@@ -225,6 +278,8 @@ class MacFilterListener implements ChangeListener {
 //		System.out.println(cb.isSelected());
 	}
 	
+	}
+	
 }
 
-}
+
