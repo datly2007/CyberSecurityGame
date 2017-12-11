@@ -12,6 +12,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
+/**
+ *
+ * @author Dat Ly
+ * @author Raymond Schooley
+ * @version 1.0
+ */
 
 public class MarketScreen extends JPanel {
 	

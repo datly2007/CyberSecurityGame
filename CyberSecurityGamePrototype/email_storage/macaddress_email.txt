@@ -1,0 +1,9 @@
+Header: Important: Authorize new employee's account
+
+Sender: The CyberComp Team
+Receiver: You 
+
+Hello Employee777
+Our team just recently hired new employee. Here is her MAC address, can you please complete the authorization so that she can able to access to company's resources. 
+
+MAC address: 00:82:BA:CD:01:DA

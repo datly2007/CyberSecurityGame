@@ -1,5 +1,13 @@
 package View;
 
+
+/**
+ *
+ * @author Dat Ly
+ * @author Raymond Schooley
+ * @version 1.0
+ */
+
 import Model.PlayerInfo;
 import java.awt.BorderLayout;
 import java.awt.Graphics;
@@ -15,6 +23,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -53,7 +62,7 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		myPassField2 = new JPasswordField(FIELD_LENGTH);
 		myNewPassA = "";
 		myNewPassB = "";
-		myOldPass = "";
+		myOldPass = "Garbage String";
 		
 		startNetworkScreen();
 	}
@@ -196,7 +205,7 @@ public class NetworkScreen extends JPanel implements ActionListener {
 		frame.add(panel);
 		
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	
 	@Override
@@ -216,14 +225,29 @@ public class NetworkScreen extends JPanel implements ActionListener {
 //			}
 			myMacField.selectAll();
 		} else if(cmd.equals(myVerifyPassword)) {
-			  myNewPassB = myPassField1.getPassword().toString();
-		} else if(cmd.equals(myVerifyPassword + "1")) {
-			myOldPass = myPassField2.getPassword().toString();
-			System.out.println(myPlayer.changePassword(myOldPass, myNewPassA
-					, myNewPassB));
-			final JPasswordField pwf = (JPasswordField) e.getSource();
-			final JFrame frame = (JFrame) pwf.getTopLevelAncestor();
-			frame.dispose();
+			  //myNewPassB = myPassField1.getText();
+		} else if(cmd.equals(myVerifyPassword + "1")) {	
+			if (myOldPass.length() > 1) {
+				myNewPassB = myPassField1.getText();
+				myOldPass = myPassField2.getText();
+			
+			passwordVerification();
+			
+			myPassField.setText(null);
+			myPassField1.setText(null);
+			myPassField2.setText(null);
+			}
+		}
+	}
+	
+	private void passwordVerification() {
+		
+		final boolean passChange = myPlayer.changePassword(myOldPass, myNewPassA
+				, myNewPassB);
+		if (passChange) {
+		    JOptionPane.showMessageDialog(myGUI, "Success. Password has been changed.");
+		} else {
+			JOptionPane.showMessageDialog(myGUI, "Old password doesn't match. Password not changed");
 		}
 	}
 	

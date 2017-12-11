@@ -5,11 +5,11 @@ import Model.PlayerInfo;
 
 import java.awt.BorderLayout;
 import java.awt.Graphics;
+import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,14 +17,13 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+
 /**
-*
-* @author Dat Ly
-* @author Raymond Schooley
-* @author Trung Thai 
-* @author Wes Stahl
-* @version 1.0
-*/
+ *
+ * @author Dat Ly
+ * @author Raymond Schooley
+ * @version 1.0
+ */
 
 public class EmailScreen extends JPanel implements PropertyChangeListener {
 	
@@ -44,6 +43,8 @@ public class EmailScreen extends JPanel implements PropertyChangeListener {
 	
 	private PlayerInfo myPlayer;
 	
+	private JPanel myTopPanel;
+	
 	public EmailScreen(final GUI theGUI, final PlayerInfo thePlayer) {
 		
 		super();
@@ -52,6 +53,7 @@ public class EmailScreen extends JPanel implements PropertyChangeListener {
 		myReportButton = new ArrayList<>();
 		myEmailList = new ArrayList<>();
 		myPlayer = thePlayer;
+		myTopPanel = new JPanel();
 		
 		startEmailScreen();
 	}
@@ -59,11 +61,15 @@ public class EmailScreen extends JPanel implements PropertyChangeListener {
 	private void startEmailScreen() {
 		
 		setLayout(new BorderLayout());
-		final EmailDetailScreen test = new EmailDetailScreen(this, "0", myPlayer);
-		myEmail.add(test);
+		myTopPanel.setLayout(new GridLayout(15, 2));
 		
-		final JPanel top_panel = new JPanel();
-		top_panel.setOpaque(false);
+		final JPanel first_panel = new JPanel();
+		
+		final EmailDetailScreen password_email = new EmailDetailScreen(this, "0", myPlayer, 
+									"email_storage/default_password_email.txt");
+		myEmail.add(password_email);
+		
+		myTopPanel.setOpaque(false);
 		
 		final JPanel bottom_panel = new JPanel();
 		bottom_panel.setOpaque(false);
@@ -74,21 +80,78 @@ public class EmailScreen extends JPanel implements PropertyChangeListener {
 		
 		bottom_panel.add(back_button);
 		
-		myEmailList.add(new JButton("Email"));
+		myEmailList.add(new JButton("Password Email"));
 		myEmailList.get(0).addMouseListener(new Email2DetailListener());
 		
 		// Need to update the myEmailIndex accordingly 
 		myReportButton.add(new JButton("Report!"));
 		
-		top_panel.add(myEmailList.get(0));
-		top_panel.add(myReportButton.get(0));
+		first_panel.add(myEmailList.get(0));
+		first_panel.add(myReportButton.get(0));
+		first_panel.setOpaque(false);
 		
-		add(top_panel, BorderLayout.CENTER);
+		myTopPanel.add(first_panel);
+		
+		add(myTopPanel, BorderLayout.NORTH);
 		add(bottom_panel, BorderLayout.SOUTH);
 		
 		myEmail.get(0).addPropertyChangeListener(this);
 	}
+	
+	public int getTotalEmail() {
+		return myEmail.size();
+	}
+	
+	public void generateMoreEmail() {
+		
+		final JPanel second_panel = new JPanel();
+		
+		final EmailDetailScreen network_email = new EmailDetailScreen(this, "1", myPlayer, 
+				"email_storage/macaddress_email.txt");
+		myEmail.add(network_email);
+		
+		myEmailList.add(new JButton("MAC Address Email"));
+		myEmailList.get(1).addMouseListener(new Email2DetailListener());
+		
+		// Need to update the myEmailIndex accordingly 
+		myReportButton.add(new JButton("Report!"));
+		
+		second_panel.add(myEmailList.get(1));
+		second_panel.add(myReportButton.get(1));
+		second_panel.setOpaque(false);
+		
+		myTopPanel.add(second_panel);
+		
+		myEmail.get(1).addPropertyChangeListener(this);
+		
+		spamEmail();
+	}
 
+	private void spamEmail() {
+		
+		for (int i = 2; i < 15; i++) {
+			final JPanel second_panel = new JPanel();
+		
+			final EmailDetailScreen network_email = new EmailDetailScreen(this, "1", myPlayer, 
+				"email_storage/phishing_email_1.txt");
+			myEmail.add(network_email);
+		
+			myEmailList.add(new JButton("Spam Email"));
+			myEmailList.get(i).addMouseListener(new Email2DetailListener());
+		
+			// Need to update the myEmailIndex accordingly 
+			myReportButton.add(new JButton("Report!"));
+		
+			second_panel.add(myEmailList.get(i));
+			second_panel.add(myReportButton.get(i));
+			second_panel.setOpaque(false);
+		
+			myTopPanel.add(second_panel);
+		
+			myEmail.get(i).addPropertyChangeListener(this);
+		}
+	}
+	
 	@Override 
 	public void paintComponent(final Graphics theGraphics) {
 		
@@ -102,8 +165,14 @@ public class EmailScreen extends JPanel implements PropertyChangeListener {
 	
 	@Override
 	public void propertyChange(final PropertyChangeEvent theEvent) {
+		int index = -1;
 		if("0".equals(theEvent.getPropertyName())) {
-			myGUI.remove( myEmail.get(0) );
+			index = 0;
+		} else if ("1".equals(theEvent.getPropertyName())) {
+			index = 1;
+		} 
+		if (index > -1) {
+			myGUI.remove( myEmail.get(index) );
 			myGUI.setContentPane(this);
 			myGUI.invalidate();
 			myGUI.validate();
@@ -125,8 +194,20 @@ public class EmailScreen extends JPanel implements PropertyChangeListener {
 		
 		@Override 
 		public void mouseClicked(final MouseEvent theEvent) {
+			Object o = theEvent.getSource();
+			JButton b = (JButton) o;
+			int index = 0; 
+			
+			if (b.getText().equals("MAC Address Email")) {
+				index = 1;
+			}
+			
+			if (b.getText().equals("Spam Email")) {
+				index = 2;
+			}
+			
 			myGUI.remove(EmailScreen.this);
-			myGUI.setContentPane( myEmail.get(0) );
+			myGUI.setContentPane( myEmail.get(index) );
 			myGUI.invalidate();
 			myGUI.validate();
 		}

@@ -23,13 +23,11 @@ import Driver.GUI;
 import Model.PlayerInfo;
 
 /**
-*
-* @author Dat Ly
-* @author Raymond Schooley
-* @author Trung Thai 
-* @author Wes Stahl
-* @version 1.0
-*/
+ *
+ * @author Dat Ly
+ * @author Raymond Schooley
+ * @version 1.0
+ */
 
 public class EmailDetailScreen extends JPanel {
 
@@ -41,7 +39,8 @@ public class EmailDetailScreen extends JPanel {
 	
 	private PlayerInfo myPlayer;
 	
-	public EmailDetailScreen(final JPanel thePanel, final String thePos, final PlayerInfo thePlayer) {
+	public EmailDetailScreen(final JPanel thePanel, final String thePos, final PlayerInfo thePlayer, 
+			final String theFileName) {
 		
 		super();
 		
@@ -50,7 +49,7 @@ public class EmailDetailScreen extends JPanel {
 		myEmailBody = new JTextArea(48, 100);
 		myPlayer = thePlayer;
 		
-		openEmail();
+		openEmail(theFileName);
 	}
 	
 //	@Override 
@@ -63,10 +62,10 @@ public class EmailDetailScreen extends JPanel {
 //		this.setOpaque(true);
 //	}
 	
-	private void openEmail() {
+	private void openEmail(final String theFile) {
 		
 		try {
-			readFile();
+			readFile(theFile);
 		} catch (final IOException e) {
     			JOptionPane.showMessageDialog(null, "Could not find file" 
     				+ e.getMessage(), "I/O Error", JOptionPane.ERROR_MESSAGE);
@@ -94,10 +93,10 @@ public class EmailDetailScreen extends JPanel {
 		setVisible(true);
 	}
 	
-	private void readFile() throws IOException {
+	private void readFile(final String theFileName) throws IOException {
 		
 		String line; 
-		File file_name = new File("email_storage/default_password_email.txt");
+		File file_name = new File(theFileName);
 		
 		FileReader file_reader = new FileReader(file_name);
 		BufferedReader buffer = new BufferedReader(file_reader);

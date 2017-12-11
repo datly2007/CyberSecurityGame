@@ -4,11 +4,11 @@
 package Model;
 
 import java.util.*;
+
 /**
  *
  * @author Dat Ly
  * @author Raymond Schooley
- * @author Trung Thai 
  * @author Wes Stahl
  * @version 1.0
  */
@@ -44,7 +44,7 @@ public class PlayerInfo {
 	 * 
 	 * @return returns a randomly generated password
 	 */
-	private String defaultPass() {
+	public String defaultPass() {
 		
 		int password_length = 10;
 		StringBuilder aString = new StringBuilder();
@@ -59,7 +59,8 @@ public class PlayerInfo {
 			password_length--;
 		}
 		
-		return aString.toString();
+		//return aString.toString();
+		return "password"; 
 	}
 	
 	/**
@@ -98,15 +99,12 @@ public class PlayerInfo {
 	 * Allows the player to change their password if they wish.
 	 */
 	public boolean changePassword(String originalPass, String newPass, String newPassA) {
-		if (!passCompare(myPass, originalPass)) {
-			return false;
-		} else if (!passCompare(newPass, newPassA)) {
-			return false;
-		} else if (!stringCheck(newPass)) {
-			return false;
-		}
-		myPass = newPass;
-		return true;
+
+		if (passCompare(myPass, originalPass) && passCompare(newPass, newPassA)) {
+			myPass = newPass;
+			return true; 
+		} 
+		return false;
 	}
 	
 	private boolean stringCheck(String newPass) {
@@ -124,10 +122,14 @@ public class PlayerInfo {
 	}
 
 	private boolean passCompare(String aString, String bString) {
-		for (int i = 0; i < aString.length(); i++) {
-			if ((char)aString.charAt(i) != (char)bString.charAt(i)) {
-				return false;
-			}
+		if (aString.length() == bString.length()) {
+			for (int i = 0; i < aString.length(); i++) {
+				if ((char)aString.charAt(i) != (char)bString.charAt(i)) {
+					return false;
+				}
+			}	
+		} else {
+			return false;
 		}
 		return true;
 	}
